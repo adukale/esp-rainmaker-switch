@@ -1,0 +1,7 @@
+source "C:/Users/adwai/Desktop/esp-idf/components/app_update/Kconfig.projbuild"
+source "C:/Users/adwai/Desktop/esp-idf/components/bootloader/Kconfig.projbuild"
+source "C:/Users/adwai/Desktop/esp-idf/components/esptool_py/Kconfig.projbuild"
+source "C:/Users/adwai/Desktop/esp-idf/components/partition_table/Kconfig.projbuild"
+source "D:/things/esp-rainmaker/examples/switch/main/Kconfig.projbuild"
+source "D:/things/esp-rainmaker/components/esp_rainmaker/Kconfig.projbuild"
+source "D:/things/esp-rainmaker/examples/common/app_wifi/Kconfig.projbuild"
