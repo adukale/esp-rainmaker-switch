@@ -18,10 +18,12 @@
 #include "app_priv.h"
 
 /* This is the button that is used for toggling the power */
-#define BUTTON1_GPIO          27
-#define BUTTON2_GPIO          14
-#define BUTTON3_GPIO          12
-#define BUTTON4_GPIO          13
+#define BUTTON1_GPIO          25
+#define BUTTON2_GPIO          26
+#define BUTTON3_GPIO          27
+#define BUTTON4_GPIO          14
+#define BUTTON5_GPIO          12
+#define BUTTON6_GPIO          13
 #define BUTTON_ACTIVE_LEVEL  0
 
 /* This is the GPIO on which the power will be set */
@@ -29,6 +31,8 @@
 #define OUTPUT2_GPIO    19
 #define OUTPUT3_GPIO    18
 #define OUTPUT4_GPIO    5
+#define OUTPUT5_GPIO    23
+#define OUTPUT6_GPIO    22
 static bool g_power_state = DEFAULT_POWER;
 
 /* These values correspoind to H,S,V = 120,100,10 */
@@ -73,6 +77,7 @@ static void release_btn1_cb(void *arg)
 static void push_btn2_cb(void *arg)
 {
     //app_driver_set_state2(0);
+    //gpio_set_level(OUTPUT2_GPIO, 0);
     gpio_set_level(OUTPUT2_GPIO, 0);
     esp_rmaker_param_update_and_report(
             esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME),
@@ -81,10 +86,73 @@ static void push_btn2_cb(void *arg)
 static void release_btn2_cb(void *arg)
 {
     //app_driver_set_state2(1);
+    //gpio_set_level(OUTPUT2_GPIO, 1);
     gpio_set_level(OUTPUT2_GPIO, 1);
     esp_rmaker_param_update_and_report(
             esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME),
             esp_rmaker_bool(0));
+}
+static void push_btn3_cb(void *arg)
+{
+    //app_driver_set_state2(0);
+    //gpio_set_level(OUTPUT2_GPIO, 0);
+    gpio_set_level(OUTPUT3_GPIO, 0);
+    esp_rmaker_param_update_and_report(
+            esp_rmaker_device_get_param_by_name(switch3_device, ESP_RMAKER_DEF_POWER_NAME),
+            esp_rmaker_bool(1));
+}
+static void release_btn3_cb(void *arg)
+{
+    //app_driver_set_state2(1);
+    //gpio_set_level(OUTPUT2_GPIO, 1);
+    gpio_set_level(OUTPUT3_GPIO, 1);
+    esp_rmaker_param_update_and_report(
+            esp_rmaker_device_get_param_by_name(switch3_device, ESP_RMAKER_DEF_POWER_NAME),
+            esp_rmaker_bool(0));
+}
+static void push_btn4_cb(void *arg)
+{
+    //app_driver_set_state2(0);
+    //gpio_set_level(OUTPUT2_GPIO, 0);
+    gpio_set_level(OUTPUT4_GPIO, 0);
+    esp_rmaker_param_update_and_report(
+            esp_rmaker_device_get_param_by_name(switch4_device, ESP_RMAKER_DEF_POWER_NAME),
+            esp_rmaker_bool(1));
+}
+static void release_btn4_cb(void *arg)
+{
+    //app_driver_set_state2(1);
+    //gpio_set_level(OUTPUT2_GPIO, 1);
+    gpio_set_level(OUTPUT4_GPIO, 1);
+    esp_rmaker_param_update_and_report(
+            esp_rmaker_device_get_param_by_name(switch4_device, ESP_RMAKER_DEF_POWER_NAME),
+            esp_rmaker_bool(0));
+}
+static void push_btn5_cb(void *arg)
+{
+    //app_driver_set_state2(0);
+    //gpio_set_level(OUTPUT2_GPIO, 0);
+    gpio_set_level(OUTPUT5_GPIO, 0);
+
+}
+static void release_btn5_cb(void *arg)
+{
+    //app_driver_set_state2(1);
+    //gpio_set_level(OUTPUT2_GPIO, 1);
+    gpio_set_level(OUTPUT5_GPIO, 1);
+}
+    
+static void push_btn6_cb(void *arg)
+{
+    //app_driver_set_state2(0);
+    //gpio_set_level(OUTPUT2_GPIO, 0);
+    gpio_set_level(OUTPUT6_GPIO, 0);
+}
+static void release_btn6_cb(void *arg)
+{
+    //app_driver_set_state2(1);
+    //gpio_set_level(OUTPUT2_GPIO, 1);
+    gpio_set_level(OUTPUT6_GPIO, 1);
 }
 static void set_power_state(bool target)
 {
@@ -99,6 +167,7 @@ static void set_power_state2(bool target)
 
 void app_driver_init()
 {
+    
     button_handle_t btn1_handle = iot_button_create(BUTTON1_GPIO, BUTTON_ACTIVE_LEVEL);
     if (btn1_handle) {
         /* Register a callback for a button tap (short press) event */
@@ -118,16 +187,32 @@ void app_driver_init()
     button_handle_t btn3_handle = iot_button_create(BUTTON3_GPIO, BUTTON_ACTIVE_LEVEL);
     if (btn3_handle) {
         /* Register a callback for a button tap (short press) event */
-       // iot_button_set_evt_cb(btn3_handle, BUTTON_CB_PUSH, push_btn3_cb, NULL);
-       // iot_button_set_evt_cb(btn3_handle, BUTTON_CB_RELEASE, release_btn3_cb, NULL);
+        iot_button_set_evt_cb(btn3_handle, BUTTON_CB_PUSH, push_btn3_cb, NULL);
+        iot_button_set_evt_cb(btn3_handle, BUTTON_CB_RELEASE, release_btn3_cb, NULL);
         /* Register Wi-Fi reset and factory reset functionality on same button */
         //app_reset_button_register(btn_handle, WIFI_RESET_BUTTON_TIMEOUT, FACTORY_RESET_BUTTON_TIMEOUT);
     }
     button_handle_t btn4_handle = iot_button_create(BUTTON4_GPIO, BUTTON_ACTIVE_LEVEL);
     if (btn4_handle) {
         /* Register a callback for a button tap (short press) event */
-        //iot_button_set_evt_cb(btn4_handle, BUTTON_CB_PUSH, push_btn4_cb, NULL);
-        //iot_button_set_evt_cb(btn4_handle, BUTTON_CB_RELEASE, release_btn4_cb, NULL);
+        iot_button_set_evt_cb(btn4_handle, BUTTON_CB_PUSH, push_btn4_cb, NULL);
+        iot_button_set_evt_cb(btn4_handle, BUTTON_CB_RELEASE, release_btn4_cb, NULL);
+        /* Register Wi-Fi reset and factory reset functionality on same button */
+        //app_reset_button_register(btn_handle, WIFI_RESET_BUTTON_TIMEOUT, FACTORY_RESET_BUTTON_TIMEOUT);
+    }
+    button_handle_t btn5_handle = iot_button_create(BUTTON5_GPIO, BUTTON_ACTIVE_LEVEL);
+    if (btn5_handle) {
+        /* Register a callback for a button tap (short press) event */
+        iot_button_set_evt_cb(btn5_handle, BUTTON_CB_PUSH, push_btn5_cb, NULL);
+        iot_button_set_evt_cb(btn5_handle, BUTTON_CB_RELEASE, release_btn5_cb, NULL);
+        /* Register Wi-Fi reset and factory reset functionality on same button */
+        //app_reset_button_register(btn_handle, WIFI_RESET_BUTTON_TIMEOUT, FACTORY_RESET_BUTTON_TIMEOUT);
+    }
+    button_handle_t btn6_handle = iot_button_create(BUTTON6_GPIO, BUTTON_ACTIVE_LEVEL);
+    if (btn6_handle) {
+        /* Register a callback for a button tap (short press) event */
+        iot_button_set_evt_cb(btn6_handle, BUTTON_CB_PUSH, push_btn6_cb, NULL);
+        iot_button_set_evt_cb(btn6_handle, BUTTON_CB_RELEASE, release_btn6_cb, NULL);
         /* Register Wi-Fi reset and factory reset functionality on same button */
         //app_reset_button_register(btn_handle, WIFI_RESET_BUTTON_TIMEOUT, FACTORY_RESET_BUTTON_TIMEOUT);
     }
@@ -137,7 +222,7 @@ void app_driver_init()
         .mode = GPIO_MODE_OUTPUT,
         .pull_up_en = 1,
     };
-    io_conf.pin_bit_mask = ((uint64_t)1 << OUTPUT1_GPIO);
+    io_conf.pin_bit_mask = ((uint64_t)1 << OUTPUT1_GPIO | (uint64_t)1 << OUTPUT2_GPIO | (uint64_t)1 << OUTPUT3_GPIO| (uint64_t)1 << OUTPUT4_GPIO | (uint64_t)1 << OUTPUT5_GPIO | (uint64_t)1 << OUTPUT6_GPIO);
     /* Configure the GPIO */
     gpio_config(&io_conf);
 

@@ -13,7 +13,7 @@
 #include <esp_log.h>
 #include <esp_event.h>
 #include <nvs_flash.h>
-
+#include <iot_button.h>
 #include <esp_rmaker_core.h>
 #include <esp_rmaker_standard_types.h>
 #include <esp_rmaker_standard_params.h>
@@ -35,6 +35,7 @@ esp_rmaker_device_t *switch3_device;
 esp_rmaker_device_t *switch4_device;
 
 /* Callback to handle commands received from the RainMaker cloud */
+
 static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_param_t *param,
             const esp_rmaker_param_val_t val, void *priv_data, esp_rmaker_write_ctx_t *ctx)
 {
@@ -50,24 +51,51 @@ static esp_err_t write_cb(const esp_rmaker_device_t *device, const esp_rmaker_pa
 if (strcmp(esp_rmaker_device_get_name(device),"Switch1")==0){
     if (val.val.b==true){
             app_driver_set_state(false);
-        esp_rmaker_param_update_and_report(param, esp_rmaker_bool(false));
-        }
-  if (val.val.b==false){
+        //esp_rmaker_param_update_and_report(param, esp_rmaker_bool(true));
+        } else if (val.val.b==false){
             app_driver_set_state(true);
-        esp_rmaker_param_update_and_report(param, esp_rmaker_bool(true));
+        //esp_rmaker_param_update_and_report(param, esp_rmaker_bool(false));
         }
+                        esp_rmaker_param_update_and_report(param, val);
+
 }
 if (strcmp(esp_rmaker_device_get_name(device),"Switch2")==0){
     if (val.val.b==true){
             app_driver_set_state2(false);
-        esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(false));
-        }
-  if (val.val.b==false){
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(true));
+        } else if (val.val.b==false){
             app_driver_set_state2(true);
-        esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(true));
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch2_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(false));
         }
-}
+                        esp_rmaker_param_update_and_report(param, val);
 
+}
+if (strcmp(esp_rmaker_device_get_name(device),"Switch3")==0){
+    if (val.val.b==true){
+            //app_driver_set_state2(false);
+            gpio_set_level(18, 0);
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch3_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(true));
+        } else if (val.val.b==false){
+            //app_driver_set_state2(true);
+            gpio_set_level(18, 1);
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch3_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(false));
+        }
+                        esp_rmaker_param_update_and_report(param, val);
+
+}
+if (strcmp(esp_rmaker_device_get_name(device),"Switch4")==0){
+    if (val.val.b==true){
+            //app_driver_set_state2(false);
+            gpio_set_level(5, 0);
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch4_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(true));
+        } else if (val.val.b==false){
+            //app_driver_set_state2(true);
+            gpio_set_level(5, 1);
+        //esp_rmaker_param_update_and_report(esp_rmaker_device_get_param_by_name(switch4_device, ESP_RMAKER_DEF_POWER_NAME), esp_rmaker_bool(false));
+        }
+                esp_rmaker_param_update_and_report(param, val);
+
+}
     }
     return ESP_OK;
 }
@@ -127,7 +155,7 @@ void app_main()
      */
     esp_rmaker_console_init();
     app_driver_init();
-    app_driver_set_state(DEFAULT_POWER);
+    //app_driver_set_state(DEFAULT_POWER);
 
     /* Initialize NVS. */
     esp_err_t err = nvs_flash_init();
